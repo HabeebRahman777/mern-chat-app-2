@@ -1,4 +1,5 @@
 import React,{useEffect} from 'react'
+import {Toaster} from "react-hot-toast"
 import { Routes,Route } from "react-router-dom"
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -24,6 +25,7 @@ const App = () => {
 
   return (
     <div>
+      <Toaster/>
       <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>}/>

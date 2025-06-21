@@ -32,8 +32,6 @@ export const getOutRequests = async(req,res)=>{
       if(!user){
         return res.status(404).json({message:"User not found"})
       }
-      console.log("out requests",user.outgoingRequests);
-      
       res.json({requests:user.outgoingRequests})
   } catch (error) {
     console.error("Error fetching requests list:", error);
@@ -48,8 +46,6 @@ export const getInRequests = async(req,res)=>{
       if(!user){
         return res.status(404).json({message:"User not found"})
       }
-      console.log("in requests",user.incomingRequests);
-      
       res.json({requests:user.incomingRequests})
   } catch (error) {
     console.error("Error fetching requests list:", error);

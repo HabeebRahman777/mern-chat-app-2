@@ -63,7 +63,12 @@ export const useChatStore=create((set,get)=>({
 
     sendFriendRequest:async(userId)=>{
         try {
+            const { socket, user } = useAuthStore.getState();
             await axiosInstance.post("friends/send",{toUserId:userId})
+            socket.emit("send_friend_request", {
+                toUserId: userId,
+                fromUser: user,
+            });
         } catch (error) {
             console.error("Error sending friend request:", error.response?.data?.message || error.message);
         }
@@ -71,11 +76,18 @@ export const useChatStore=create((set,get)=>({
 
     acceptFriendRequest:async(userId)=>{
         try {
+            const { socket, user } = useAuthStore.getState();
             await axiosInstance.post("friends/accept",{fromUserId:userId})
+            socket.emit("accept_friend_request", {
+            toUserId: userId,
+            fromUser: user,
+            });
+            get().getInRequests()
+            get().getFriends()
         } catch (error) {
             console.error("Error accepting friend request:", error.response?.data?.message || error.message);
         }
-    }
+    },
 
 
 }))
