@@ -11,6 +11,7 @@ export const useChatStore=create((set,get)=>({
     friends:[],
     selectedUser:null,
     loading:false,
+    messageLoading:false,
 
     getUsers:async()=>{
         set({loading:true})
@@ -88,6 +89,55 @@ export const useChatStore=create((set,get)=>({
             console.error("Error accepting friend request:", error.response?.data?.message || error.message);
         }
     },
+
+    setSelectedUser: (selectedUser) => set({ selectedUser }),
+
+    sendMessage:async (messageData)=>{
+        const{selectedUser,messages}=get()
+        try {
+            const res=await axiosInstance.post(`/chat/send/${selectedUser._id}`,messageData)
+            set({messages:[...messages,res.data]})
+        } catch (error) {
+            console.error("Error in sending messages:", error.response?.data?.message || error.message);
+        }
+    },
+
+    getMessages:async(userId)=>{
+        set({messageLoading:true})
+        try {
+            const res=await axiosInstance.get(`/chat/${userId}`,)
+            set({messages:res.data})
+            set({messageLoading:false})
+            
+        } catch (error) {
+            console.error("Error in fetching messages:", error.response?.data?.message || error.message);
+        }
+    },
+
+    subscribeToMessages: () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+
+    socket.on("newMessage", (newMessage) => {
+
+      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
+      if (!isMessageSentFromSelectedUser) return;
+
+      set({
+        messages: [...get().messages, newMessage],
+      });
+    });
+  },
+
+  unsubscribeFromMessages: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
+  },
+
+  clearSelectedUser: () => set({ selectedUser: null }),
+
 
 
 }))

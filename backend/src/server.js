@@ -17,10 +17,6 @@ const io = new Server(httpServer, {
   },
 });
 
-app.use((req, res, next) => {
-  req.io = io; 
-  next();
-});
 
 connectDB();
 
@@ -29,3 +25,5 @@ socketHandler(io);
 httpServer.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)
 );
+
+export {io}

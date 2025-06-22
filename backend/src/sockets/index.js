@@ -1,19 +1,20 @@
-const onlineUsers = new Map(); // make sure this exists in scope or export/import
+const onlineUsers = new Map();
+
+export function getReceiverSocketId(userId) {
+  return onlineUsers.get(userId);
+}
 
 export const socketHandler = (io) => {
   io.on("connection", (socket) => {
     console.log("🟢 User connected:", socket.id);
 
-    // 🔹 1. Save socket to userId mapping
     socket.on("setup", (userId) => {
       if (userId) {
         onlineUsers.set(userId, socket.id);
-        socket.join(userId); // Join a personal room
-        console.log(`👤 User ${userId} joined personal room`);
+        io.emit("getOnlineUsers", Array.from(onlineUsers.keys()))
       }
     });
 
-    // 🔹 2. When user sends a friend request
     socket.on("send_friend_request", ({ toUserId, fromUser }) => {
       const receiverSocketId = onlineUsers.get(toUserId);
       if (receiverSocketId) {
@@ -22,7 +23,6 @@ export const socketHandler = (io) => {
       }
     });
 
-    // 🔹 3. When friend request is accepted
     socket.on("accept_friend_request", ({ toUserId, fromUser }) => {
       const receiverSocketId = onlineUsers.get(toUserId);
       if (receiverSocketId) {
@@ -31,7 +31,6 @@ export const socketHandler = (io) => {
       }
     });
 
-    // 🔴 4. Cleanup on disconnect
     socket.on("disconnect", () => {
       for (let [userId, sockId] of onlineUsers.entries()) {
         if (sockId === socket.id) {
@@ -40,6 +39,7 @@ export const socketHandler = (io) => {
           break;
         }
       }
+      io.emit("getOnlineUsers", Array.from(onlineUsers.keys()))
       console.log("🔴 User disconnected:", socket.id);
     });
   });

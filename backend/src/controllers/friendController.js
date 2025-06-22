@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import {io} from "../server.js"
 
 export const sendFriendRequest = async (req, res) => {
   const { toUserId } = req.body;
@@ -32,7 +33,7 @@ export const sendFriendRequest = async (req, res) => {
 
     res.status(200).json({ message: "Friend request sent." });
 
-    req.io?.to(toUserId).emit("new_friend_request", {
+    io.to(toUserId).emit("new_friend_request", {
       fromUser: {
         _id: fromUser._id,
         fullName: fromUser.fullName,
@@ -73,7 +74,7 @@ export const acceptFriendRequest = async (req, res) => {
     await toUser.save();
     await fromUser.save();
 
-    req.io?.to(fromUserId.toString()).emit("friend_request_accepted", {
+    io.to(fromUserId.toString()).emit("friend_request_accepted", {
       byUser: {
         _id: toUser._id,
         fullName: toUser.fullName,

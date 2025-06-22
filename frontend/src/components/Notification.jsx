@@ -27,7 +27,7 @@ const Notification = () => {
   
 
   return (
-    <div>
+    <div className='bg-gray-200'>
       <h2>Notifications</h2>
       {incomingRequestUsers.length === 0 ? (
         <p>No incoming friend requests</p>

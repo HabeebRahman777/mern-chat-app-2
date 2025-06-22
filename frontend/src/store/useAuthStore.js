@@ -36,7 +36,9 @@ export const useAuthStore = create((set,get) => ({
   logout: async () => {
     await axiosInstance.post("/auth/logout");
     set({ user: null });
+    toast.success("Logged out successfully")
     get().disconnectSocket()
+    useChatStore.getState().clearSelectedUser();
   },
 
   signup: async({username,email,password})=>{
@@ -85,8 +87,13 @@ export const useAuthStore = create((set,get) => ({
       });
 
       socket.on("friend_request_accepted", (fromUser) => {
+        toast.success(`${fromUser.username} accepted your friend request!`);
         useChatStore.getState().getFriends();
         useChatStore.getState().getOutRequests();
+      });
+
+      socket.on("getOnlineUsers", (userIds) => {
+        set({ onlineUsers: userIds });
       });
 
     },
