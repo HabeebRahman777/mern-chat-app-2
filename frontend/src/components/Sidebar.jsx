@@ -35,9 +35,9 @@ const Sidebar = () => {
   const friendUsers = users.filter((user) => friends.includes(user._id));
 
   return (
-    <div className="flex">
+    <div className="flex h-full bg-violet-400">
       
-      <div className="flex flex-col items-center bg-gray-200 px-2 py-4">
+      <div className="flex flex-col items-center px-2 py-4">
         <button
           onClick={() => setShowUsers((prev) => !prev)}
           className="bg-blue-500 text-white w-10 h-40 flex items-center justify-center rounded hover:bg-blue-600"
@@ -51,8 +51,8 @@ const Sidebar = () => {
       {/* Global Users Panel */}
       <div
         className={`transition-all duration-300 ${
-          showUsers ? 'w-64 opacity-100' : 'w-0 opacity-0'
-        } overflow-hidden bg-white border-l`}
+          showUsers ? 'w-64  ' : 'w-0 '
+        } overflow-hidden border-l`}
       >
         <div className="p-4">
           <h2 className="font-semibold text-lg mb-2">Global Users</h2>
@@ -86,7 +86,7 @@ const Sidebar = () => {
       </div>
 
       {/* Friends Panel */}
-      <div className="w-64 bg-gray-100 p-4 border-l">
+      <div className="w-64 p-4 border-l">
         <h2 className="font-semibold text-lg mb-2">Friends</h2>
         {loading ? (
           <p>Loading friends...</p>

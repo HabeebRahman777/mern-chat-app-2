@@ -15,6 +15,7 @@ export const useAuthStore = create((set,get) => ({
   checkingAuth:true,
   socket:null,
   onlineUsers:[],
+  hasNewNotification: false,
 
   
   login: async ({ email, password }) => {
@@ -84,6 +85,7 @@ export const useAuthStore = create((set,get) => ({
       socket.on("new_friend_request", (fromUser) => {
         toast.success(`${fromUser.username} sent you a friend request!`);
         useChatStore.getState().getInRequests();
+        set({ hasNewNotification: true });
       });
 
       socket.on("friend_request_accepted", (fromUser) => {
@@ -101,5 +103,7 @@ export const useAuthStore = create((set,get) => ({
     disconnectSocket: () => {
       if (get().socket?.connected) get().socket.disconnect();
     },
+
+    setHasNewNotification: (value) => set({ hasNewNotification: value }),
 
 }));

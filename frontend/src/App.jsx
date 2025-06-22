@@ -1,17 +1,26 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import {Toaster} from "react-hot-toast"
-import { Routes,Route } from "react-router-dom"
+import { Routes,Route,Navigate } from "react-router-dom"
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Profile from './pages/Profile'
 import { useAuthStore } from './store/useAuthStore'
 
 const App = () => {
   const user = useAuthStore((state) => state.user);
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const checkingAuth = useAuthStore((state) => state.checkingAuth);
-
+  
+  const [isNotifOpen, setIsNotifOpen] = useState(false)
+  const toggleNotification = () => {
+  setIsNotifOpen(prev => {
+    const newState = !prev
+    if (newState) useAuthStore.getState().setHasNewNotification(false) // ✅ reset red dot
+    return newState
+  })
+}
 
   useEffect(() => {
     checkAuth(); 
@@ -24,13 +33,14 @@ const App = () => {
   )
 
   return (
-    <div>
+    <div className='bg-red-700'>
       <Toaster/>
-      <Navbar/>
+      <Navbar onBellClick={toggleNotification}/>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/login' element={!user ? <Login/> : <Home/>}/>
-        <Route path='/signup' element={!user ? <Signup/> : <Home/>}/>
+        <Route path='/' element={<Home isNotifOpen={isNotifOpen}/>}/>
+        <Route path='/login' element={!user ? <Login/> : <Navigate to="/"/>}/>
+        <Route path='/signup' element={!user ? <Signup/> : <Navigate to="/"/>}/>
+        <Route path='/profile' element={user ? <Profile/> : <Navigate to="/"/>}/>
       </Routes>
     </div>
   )

@@ -6,7 +6,7 @@ const ChatHeader = () => {
     const {onlineUsers}=useAuthStore()
     const {selectedUser}=useChatStore()
   return (
-    <button className='flex flex-col items-start pl-2 border-2 w-full'>
+    <button className='bg-violet-700 flex flex-col items-start pl-2 border-2 w-full'>
         <span>{selectedUser.username}</span>
         <span className={`text-sm ${
         onlineUsers.includes(selectedUser._id) ? 'text-green-600' : 'text-gray-400'

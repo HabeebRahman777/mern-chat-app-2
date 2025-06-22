@@ -25,8 +25,10 @@ const MessageInput = () => {
     // }
 
   return (
-    <div>
-        <form onSubmit={handleMessage}>
+    <div className='bg-violet-800 '>
+        <form onSubmit={handleMessage}
+              className='flex justify-between p-2'
+              >
             <div>
                <input 
                 type="text" 
@@ -39,14 +41,14 @@ const MessageInput = () => {
                  accept="image/*"
                  onChange={handleImage}
                  /> */}
-                 <button
-                 type='submit'
-                 className=''
-
-                 >
-                    Send
-                 </button>
             </div>
+            <button
+            type='submit'
+            className=''
+
+            >
+              Send
+            </button>
         </form>
     </div>
   )
