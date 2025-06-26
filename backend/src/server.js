@@ -4,16 +4,16 @@ import { Server } from "socket.io";
 import { connectDB } from "./config/db.js";
 import { socketHandler } from "./sockets/index.js";
 import app from "./app.js";
+import path from "path"
 
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-// Create HTTP + Socket.IO server
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://192.168.1.8:5173",
+    origin: "http://localhost:5173",
   },
 });
 
@@ -21,6 +21,16 @@ const io = new Server(httpServer, {
 connectDB();
 
 socketHandler(io);
+
+const __dirname = path.resolve()
+
+if(process.env.NODE_ENV==="production"){
+  app.use(express.static(path.join(__dirname,"../frontend/dist")))
+
+  app.get("*",(req,res)=>{
+    res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))
+  })
+}
 
 httpServer.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)
