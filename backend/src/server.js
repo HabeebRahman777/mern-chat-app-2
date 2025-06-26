@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 import { socketHandler } from "./sockets/index.js";
 import app from "./app.js";
 import path from "path"
+import express from "express"
 
 dotenv.config();
 
