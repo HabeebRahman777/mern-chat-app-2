@@ -18,7 +18,7 @@ const Home = ({ isNotifOpen }) => {
         <>
           <Sidebar />
           {!selectedUser ? (
-            <div className="flex-1 flex flex-col items-center justify-center border-x border-yellow-200 bg-white/80 rounded-xl mx-4 p-6 shadow-xl">
+            <div className="flex-1 hidden sm:flex flex-col items-center justify-center border-x border-yellow-200 bg-white/80 rounded-xl mx-4 p-6 shadow-xl">
               <UserCircle className="w-16 h-16 text-yellow-700 mb-4" />
               <h2 className="text-3xl font-bold text-gray-800 mb-2">
                 Welcome, {user.username}
@@ -27,6 +27,7 @@ const Home = ({ isNotifOpen }) => {
                 Select a chat to get started
               </p>
             </div>
+
           ) : (
             <ChatContainer />
           )}
