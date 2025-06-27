@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useRef } from 'react';
 import ChatHeader from './ChatHeader';
 import MessageInput from './MessageInput';
 import { useChatStore } from '../store/useChatStore';
@@ -12,6 +12,14 @@ const ChatContainer = () => {
     subscribeToMessages,
     unsubscribeFromMessages,
   } = useChatStore();
+  
+  const messageEndRef = useRef(null);
+
+  useEffect(() => {
+    if (messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (!selectedUser?._id) return;
@@ -40,6 +48,7 @@ const ChatContainer = () => {
                     ? 'bg-white self-start text-gray-900'
                     : 'bg-yellow-300 self-end text-gray-800'
                 }`}
+                ref={messageEndRef}
               >
                 {message.text}
               </div>
