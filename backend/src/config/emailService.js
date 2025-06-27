@@ -10,12 +10,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const confirm_url= import.meta.env.MODE === "development" ? "http://localhost:5173/confirm-email":"/confirm-email"
+const APP_URL = process.env.APP_URL || "http://localhost:5173";
 
 export const sendConfirmationEmail = async (userEmail, userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-  const confirmLink = `${confirm_url}?token=${token}`; // or your frontend domain
+  const confirmLink = `${APP_URL}/confirm-email?token=${token}`; 
 
   try{
     await transporter.sendMail({
