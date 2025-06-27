@@ -1,9 +1,12 @@
 import React,{useState} from 'react'
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from "react-router-dom";
+import {Loader2} from "lucide-react"
+import toast from 'react-hot-toast'
+
 
 const Signup = () => {
-  const signup = useAuthStore((state) => state.signup);
+    const {signup,isSigningUp}=useAuthStore()
     const error = useAuthStore((state) => state.error);
   
     const [username, setUsername] = useState("");
@@ -11,10 +14,27 @@ const Signup = () => {
     const [password, setPassword] = useState("");
   
     const navigate = useNavigate();
+
+    const validateForm = () => {
+    if (!username.trim()) return toast.error("Full name is required");
+    if (!email.trim()) return toast.error("Email is required");
+    if (!/\S+@\S+\.\S+/.test(email)) return toast.error("Invalid email format");
+    if (!password) return toast.error("Password is required");
+    if (password.length < 6) return toast.error("Password must be at least 6 characters");
+
+    return true;
+  };
   
     const handleSignup = async (e) => {
       e.preventDefault();
-      await signup({username, email, password });
+      const valid=validateForm()
+      if (valid===true){
+        const success = await signup({ username, email, password });
+        if (success) {
+          navigate("/confirm-notice");
+        }
+      }
+      
     };
   
     return (
@@ -66,7 +86,14 @@ const Signup = () => {
               type="submit"
               className="w-full bg-lime-600 hover:bg-lime-700 text-white font-semibold py-2 px-4 rounded-md transition-all duration-200"
             >
-              Sign in
+              {isSigningUp ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="size-5 animate-spin" />
+                  <span>Creating...</span>
+                </div>
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
   

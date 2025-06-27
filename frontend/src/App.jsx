@@ -7,6 +7,8 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import { useAuthStore } from './store/useAuthStore'
+import ConfirmEmail from './pages/ConfirmEmail';
+import ConfirmNotice from './pages/ConfirmNotice';
 
 const App = () => {
   const user = useAuthStore((state) => state.user);
@@ -41,6 +43,8 @@ const App = () => {
         <Route path='/login' element={!user ? <Login/> : <Navigate to="/"/>}/>
         <Route path='/signup' element={!user ? <Signup/> : <Navigate to="/"/>}/>
         <Route path='/profile' element={user ? <Profile/> : <Navigate to="/"/>}/>
+        <Route path="/confirm-email" element={<ConfirmEmail />} />
+        <Route path="/confirm-notice" element={<ConfirmNotice />} />
       </Routes>
     </div>
   )

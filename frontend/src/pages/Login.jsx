@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
+import {Loader2} from "lucide-react"
 
 const Login = () => {
   const login = useAuthStore((state) => state.login);
   const error = useAuthStore((state) => state.error);
+  const loading = useAuthStore((state)=>state.loading)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +56,14 @@ const Login = () => {
             type="submit"
             className="w-full bg-lime-600 hover:bg-lime-700 text-white font-semibold py-2 px-4 rounded-md transition-all duration-200"
           >
-            Login
+            {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="size-5 animate-spin" />
+                  <span>Loging...</span>
+                </div>
+              ) : (
+                "Login"
+              )}
           </button>
         </form>
 

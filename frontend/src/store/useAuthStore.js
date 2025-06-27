@@ -17,6 +17,7 @@ export const useAuthStore = create((set,get) => ({
   onlineUsers:[],
   hasNewNotification: false,
   isUpdatingProfile:false,
+  isSigningUp:false,
 
   
   login: async ({ email, password }) => {
@@ -45,15 +46,17 @@ export const useAuthStore = create((set,get) => ({
 
   signup: async({username,email,password})=>{
     try {
-        set({loading:true,error:null})
-        const res = await axiosInstance.post(
-            "/auth/register",
-            {username,email,password}
-        )
-        set({user:res.data,loading:false})
-        get().connectSocket()
+      set({isSigningUp:true,error: null})
+      const res = await axiosInstance.post(
+          "/auth/register",
+          {username,email,password}
+      )
+      return true;
     } catch (err) {
-        set({error:err.response?.data?.message || "Signup failed" ,loading:false})
+      set({error:err.response?.data?.message || "Signup failed" ,loading:false})
+      return false
+    }finally{
+      set({isSigningUp:false})
     }
   },
 
