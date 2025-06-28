@@ -58,40 +58,52 @@ export const getInRequests = async(req,res)=>{
   }
 }
 
-export const sendMessage=async(req,res)=>{
+export const sendMessage = async (req, res) => {
   try {
-    const{text,image}=req.body
-    const{id:receiverId}=req.params
-    const senderId=req.user._id
+    const { text, image, video } = req.body;
+    const { id: receiverId } = req.params;
+    const senderId = req.user._id;
 
+    let imageUrl = null;
+    let videoUrl = null;
 
-    let imageUrl
-    
-    if(image){
-      const uploadResponse=await cloudinary.uploader.upload(image)
-      imageUrl=uploadResponse.secure_url
+    if (image) {
+      const uploadResponse = await cloudinary.uploader.upload(image, {
+        resource_type: "image",
+      });
+      imageUrl = uploadResponse.secure_url;
+    }
+
+    if (video) {
+      const uploadResponse = await cloudinary.uploader.upload(video, {
+        resource_type: "video",
+      });
+      videoUrl = uploadResponse.secure_url;
     }
 
     const newMessage = new Message({
       senderId,
       receiverId,
       text,
-      image:imageUrl
-    })
+      image: imageUrl,
+      video: videoUrl,
+    });
 
-    await newMessage.save()
+    await newMessage.save();
 
-    const receiverSocketId=getReceiverSocketId(receiverId)
-    
-    if(receiverId){
-      io.to(receiverSocketId).emit("newMessage",newMessage)
+    const receiverSocketId = getReceiverSocketId(receiverId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
     }
-    res.status(201).json(newMessage)
+
+    res.status(201).json(newMessage);
   } catch (error) {
-    console.log("Error in sendMessage controller",error.message)
-    res.status(500).json({error:"Internal server error"})
+    console.log("Error in sendMessage controller", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
-}
+};
+
 
 export const getMessages=async(req,res)=>{
   try {

@@ -57,6 +57,13 @@ const ChatContainer = () => {
                     className="sm:max-w-[200px] rounded-md mb-2"
                   />
                 )}
+                {message.video && (
+                  <video
+                    src={message.video}
+                    controls
+                    className="sm:max-w-[250px] rounded-md mb-2"
+                  />
+                )}
                 {message.text}
               </div>
             );
