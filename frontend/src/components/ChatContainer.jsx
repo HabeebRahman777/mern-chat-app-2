@@ -49,7 +49,14 @@ const ChatContainer = () => {
                     : 'bg-yellow-300 self-end text-gray-800'
                 }`}
                 ref={messageEndRef}
-              >
+              > 
+                {message.image && (
+                  <img
+                    src={message.image}
+                    alt="Attachment"
+                    className="sm:max-w-[200px] rounded-md mb-2"
+                  />
+                )}
                 {message.text}
               </div>
             );
