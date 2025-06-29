@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useChatStore } from '../store/useChatStore';
-import { Image, Send, Video, X } from 'lucide-react';
+import { Image, Send, Video, X ,Loader} from 'lucide-react';
 import toast from "react-hot-toast";
 
 const MessageInput = () => {
   const [text, setText] = useState('');
-  const { sendMessage } = useChatStore();
+  const { sendMessage,isSending } = useChatStore();
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -116,9 +116,13 @@ const MessageInput = () => {
           type="submit"
           className="text-white bg-violet-600 hover:bg-violet-700 p-2 rounded-full transition"
           title="Send"
-        >
-          <Send size={18} className="stroke-white" />
-        </button>
+          disabled={isSending?true:false}
+        > 
+          {isSending?
+            <Loader className="animate-spin stroke-white" size={18} />
+            : <Send size={18} className="stroke-white" />
+          }
+          </button>
       </form>
     </div>
   );
