@@ -17,7 +17,9 @@ const Sidebar = () => {
     sendFriendRequest,
     selectedUser,
     setSelectedUser,
-    messageNotifications,
+    countUnreadMessages,
+    unreadCount,
+    subscribeToMessages,
   } = useChatStore();
 
   const [activeTab, setActiveTab] = useState('friends'); 
@@ -25,6 +27,7 @@ const Sidebar = () => {
   useEffect(() => {
     getUsers();
     getFriends();
+    countUnreadMessages()
     getOutRequests();
   }, []);
 
@@ -127,9 +130,9 @@ const Sidebar = () => {
                         {onlineUsers.includes(user._id) ? 'online' : 'offline'}
                       </span>
 
-                      {messageNotifications[user._id] && (
-                        <span className="text-xs bg-red-500 text-white rounded-full px-2 py-0.5">
-                          {messageNotifications[user._id]}
+                      {unreadCount[user._id] > 0 && (
+                        <span className="text-xs bg-green-500 text-white rounded-full px-2 py-0.5">
+                          {unreadCount[user._id]}
                         </span>
                       )}
                     </div>

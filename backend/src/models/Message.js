@@ -21,6 +21,7 @@ const messageSchema=new mongoose.Schema(
         video:{ 
             type:String 
         },
+        read: { type: Boolean, default: false },
     },
     {timestamps:true}
 );

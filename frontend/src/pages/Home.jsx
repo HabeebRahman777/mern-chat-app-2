@@ -6,11 +6,16 @@ import { useChatStore } from '../store/useChatStore';
 import ChatContainer from '../components/ChatContainer';
 import { useNavigate } from 'react-router-dom';
 import { UserCircle, MessageSquareHeart } from 'lucide-react';
+import { useEffect } from 'react';
 
 const Home = ({ isNotifOpen }) => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const { selectedUser } = useChatStore();
+  const { selectedUser,subscribeToMessages } = useChatStore();
+
+  useEffect(()=>{
+    subscribeToMessages()
+  },[selectedUser])
 
   return (
     <div className="flex h-screen bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 pt-14">

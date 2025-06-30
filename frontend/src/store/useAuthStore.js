@@ -42,6 +42,7 @@ export const useAuthStore = create((set,get) => ({
     toast.success("Logged out successfully")
     get().disconnectSocket()
     useChatStore.getState().clearSelectedUser();
+    useChatStore.getState().unsubscribeFromMessages();
   },
 
   signup: async({username,email,password})=>{
@@ -101,6 +102,8 @@ export const useAuthStore = create((set,get) => ({
       socket.on("getOnlineUsers", (userIds) => {
         set({ onlineUsers: userIds });
       });
+
+      useChatStore.getState().subscribeToMessages();
 
     },
 

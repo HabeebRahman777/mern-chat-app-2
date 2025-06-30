@@ -124,3 +124,51 @@ export const getMessages=async(req,res)=>{
     res.status(500).json({error:"Internal server error"})
   }
 }
+
+export const markRead=async(req,res)=>{
+  const { senderId } = req.params
+  const receiverId = req.user._id
+  
+
+  try {
+    await Message.updateMany(
+      {
+        senderId,
+        receiverId,
+        read: false,
+      },
+      { $set: { read: true } }
+    );
+    res.status(200).json({ message: "Messages marked as read." });
+  } catch (error) {
+    console.error("Error marking messages as read:", error);
+    res.status(500).json({ message: "Failed to mark messages as read." });
+  }
+}
+
+export const unreadCount = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const counts = await Message.aggregate([
+      { $match: { receiverId: userId, read: false } },
+      {
+        $group: {
+          _id: "$senderId",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Convert to object format
+    const unreadMap = counts.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {});
+
+    res.status(200).json(unreadMap); // { senderId1: 3, senderId2: 5 }
+  } catch (error) {
+    console.error("Unread count error:", error);
+    res.status(500).json({ message: "Failed to fetch unread counts" });
+  }
+};

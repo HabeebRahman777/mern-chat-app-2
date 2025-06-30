@@ -14,7 +14,7 @@ export const useChatStore=create((set,get)=>({
     loading:false,
     messageLoading:false,
     isSending:false,
-    messageNotifications: {},
+    unreadCount: {},
 
     getUsers:async()=>{
         set({loading:true})
@@ -99,15 +99,24 @@ export const useChatStore=create((set,get)=>({
         }
     },
 
-    setSelectedUser: (selectedUser) => {
-        const currentNotifications = get().messageNotifications;
+    setSelectedUser:async (selectedUser) => {
+        set({selectedUser});
 
-        const { [selectedUser._id]: removed, ...rest } = currentNotifications;
+        if (!selectedUser?._id) return;
+        
+        try {
+            await get().markRead(selectedUser);
 
-        set({
-            selectedUser,
-            messageNotifications: rest,
-        });
+            
+            const currentUnread = get().unreadCount;
+            const { [selectedUser._id]: _, ...rest } = currentUnread; 
+            set({ unreadCount: rest });
+
+        } catch (error) {
+            console.error("Failed to mark messages as read or update unread count:", error.message);
+        }
+
+        
     },
 
     sendMessage:async (messageData)=>{
@@ -135,42 +144,34 @@ export const useChatStore=create((set,get)=>({
     },
 
     subscribeToMessages: () => {
-    const { selectedUser } = get();
-    if (!selectedUser) return;
-
-    const socket = useAuthStore.getState().socket;
-
-    socket.on("newMessage", (newMessage) => {
-      const currentMessages = get().messages;
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      
-      if (isMessageSentFromSelectedUser) {
-        set({
-            messages: [...currentMessages, newMessage],
-        });
-      } else {
-        const currentNotifications = get().messageNotifications;
-        const senderId = newMessage.senderId;
-
-        const updatedNotifications = {
-            ...currentNotifications,
-            [senderId]: (currentNotifications[senderId] || 0) + 1,
-        };
-
-        set({ messageNotifications: updatedNotifications });
-
-        const sender = get().users.find((u) => u._id === senderId);
         
-        const senderName = sender?.username || "New Message";
+        const socket = useAuthStore.getState().socket;
 
-        
-        toast.success(`${senderName}: ${newMessage.text || "📎 Media message"}`, {
-            icon: "💬",
+        socket.off("newMessage");
+
+        socket.on("newMessage", (newMessage) => {
+            const { selectedUser, messages, users, unreadCount } = get();
+            
+            const isFromSelectedUser = selectedUser && newMessage.senderId === selectedUser._id;
+
+            if (isFromSelectedUser) {
+                set({ messages: [...messages, newMessage] });
+            } else {
+                const updatedUnreadCount = {
+                    ...unreadCount,
+                    [newMessage.senderId]: (unreadCount[newMessage.senderId] || 0) + 1,
+                };
+                set({ unreadCount: updatedUnreadCount });
+
+                const sender = users.find((u) => u._id === newMessage.senderId);
+                const senderName = sender?.username || "New Message";
+                toast.success(`${senderName}: ${newMessage.text || "📎 Media message"}`, {
+                    icon: "💬",
+                });
+            }
         });
+    },
 
-      }
-    });
-  },
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
@@ -178,6 +179,31 @@ export const useChatStore=create((set,get)=>({
   },
 
   clearSelectedUser: () => set({ selectedUser: null }),
+
+  countUnreadMessages: async () => {
+    try {
+        const res = await axiosInstance.get('/chat/unreadcount');
+        const unreadCount = res.data;
+
+        set({ unreadCount });
+
+
+    } catch (error) {
+        console.error(
+        "Error fetching unread message counts:",
+        error.response?.data?.message || error.message
+        );
+    }
+ },
+
+ markRead : async(selectedUser)=>{
+    try {
+      await axiosInstance.patch(`/chat/markread/${selectedUser._id}`);
+
+    } catch (error) {
+        console.error("Error marking messages as read:", error.response?.data?.message || error.message);
+    }
+ }
 
 
 
