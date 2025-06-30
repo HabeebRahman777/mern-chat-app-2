@@ -54,8 +54,11 @@ export const useChatStore=create((set,get)=>({
     },
 
     getInRequests:async()=>{
+        const {user} = useAuthStore.getState()
+        if(!user) return
+
         try {
-            const {user} = useAuthStore.getState()
+            
             const response = await axiosInstance.get(`chat/inrequests/${user._id}`)
             const incoming = response.data.requests || [];
 
@@ -146,6 +149,8 @@ export const useChatStore=create((set,get)=>({
     subscribeToMessages: () => {
         
         const socket = useAuthStore.getState().socket;
+
+        if (!socket) return
 
         socket.off("newMessage");
 
