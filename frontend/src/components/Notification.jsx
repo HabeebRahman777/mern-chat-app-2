@@ -54,7 +54,7 @@ const Notification = ({ isOpen }) => {
                   </button>
 
                   <button
-                    onClick={() => acceptFriendRequest(user._id)}
+                    // onClick={() => acceptFriendRequest(user._id)}
                     className="bg-red-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded transition"
                   >
                     Decline
