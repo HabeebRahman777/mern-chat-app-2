@@ -45,6 +45,22 @@ const Notification = ({ isOpen }) => {
                 <span className="text-sm font-medium text-gray-800">
                   {user.username}
                 </span>
+                <div className='flex flex-row gap-1 items-center justify-center'>
+                    <button
+                    onClick={() => acceptFriendRequest(user._id)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1 rounded transition"
+                  >
+                    Accept
+                  </button>
+
+                  <button
+                    onClick={() => acceptFriendRequest(user._id)}
+                    className="bg-red-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded transition"
+                  >
+                    Decline
+                  </button>
+
+                </div>
                 <button
                   onClick={() => acceptFriendRequest(user._id)}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1 rounded transition"
