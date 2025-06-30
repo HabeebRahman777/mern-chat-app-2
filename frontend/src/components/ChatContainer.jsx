@@ -3,6 +3,7 @@ import ChatHeader from './ChatHeader';
 import MessageInput from './MessageInput';
 import { useChatStore } from '../store/useChatStore';
 import { formatMessageTime,formatDateHeader } from '../lib/time';
+import MessageLoading from './MessageLoading';
 
 const ChatContainer = () => {
   const {
@@ -49,7 +50,9 @@ const ChatContainer = () => {
 
       <div className="flex-1 flex flex-col overflow-y-auto px-4 py-3 space-y-2 scrollbar-hide">
         {messageLoading ? (
-          <div className="text-center text-gray-700 animate-pulse">Loading messages...</div>
+          <>
+            <MessageLoading/>
+          </>
         ) : messages.length === 0 ? (
           <div className="text-center text-gray-600 italic">No messages yet</div>
         ) : (

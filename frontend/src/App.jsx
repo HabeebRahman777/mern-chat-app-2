@@ -9,6 +9,8 @@ import Profile from './pages/Profile'
 import { useAuthStore } from './store/useAuthStore'
 import ConfirmEmail from './pages/ConfirmEmail';
 import ConfirmNotice from './pages/ConfirmNotice';
+import Loading from './components/Loading'
+
 
 const App = () => {
   const user = useAuthStore((state) => state.user);
@@ -19,7 +21,7 @@ const App = () => {
   const toggleNotification = () => {
   setIsNotifOpen(prev => {
     const newState = !prev
-    if (newState) useAuthStore.getState().setHasNewNotification(false) // ✅ reset red dot
+    if (newState) useAuthStore.getState().setHasNewNotification(false) 
     return newState
   })
 }
@@ -29,9 +31,7 @@ const App = () => {
   }, [checkAuth]);
 
   if(checkingAuth) return(
-    <div className="flex items-center justify-center h-screen">
-      Loading.........................
-    </div>
+    <Loading/>
   )
 
   return (

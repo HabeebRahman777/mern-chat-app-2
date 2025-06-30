@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { Bell } from 'lucide-react';
+import { Bell, UserPlus } from 'lucide-react';
 import { useChatStore } from '../store/useChatStore';
 
 const Navbar = ({ onBellClick }) => {
@@ -54,11 +54,11 @@ const Navbar = ({ onBellClick }) => {
           <div className="flex items-center gap-4">
             {!isProfilePage && (
               <button onClick={onBellClick} className="relative">
-                <Bell className="w-6 h-6 text-white hover:text-lime-100 transition cursor-pointer" />
+                <UserPlus className="w-5 h-5 text-black-500 cursor-pointer hover:text-green-950" />
                 {hasNewNotification && (
                   <>
-                    <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-                    <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-red-600"></span>
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-red-600"></span>
                   </>
                 )}
               </button>

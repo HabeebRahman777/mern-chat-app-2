@@ -3,6 +3,7 @@ import { useChatStore } from '../store/useChatStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { Users, UserPlus } from 'lucide-react';
 import { UserCircle2 } from 'lucide-react';
+import UserLoading from './UserLoading';
 
 const Sidebar = () => {
   const { user, onlineUsers } = useAuthStore();
@@ -55,7 +56,9 @@ const Sidebar = () => {
               Global Users
             </h2>
             {loading ? (
-              <p className="text-sm text-gray-500">Loading users...</p>
+              <>
+                <UserLoading/>
+              </>
             ) : nonFriendUsers.length === 0 ? (
               <p className="text-sm text-gray-500">No users found</p>
             ) : (
@@ -96,7 +99,9 @@ const Sidebar = () => {
           <>
             <h2 className="font-semibold text-lg text-gray-700 mb-3">Friends</h2>
             {loading ? (
-              <p className="text-sm text-gray-500">Loading friends...</p>
+              <>
+                <UserLoading/>
+              </>
             ) : friendUsers.length === 0 ? (
               <p className="text-sm text-gray-500">You have no friends yet</p>
             ) : (

@@ -24,30 +24,30 @@ const Notification = ({ isOpen }) => {
 
   return (
     <div
-      className={`top-0 right-0 h-full bg-green-500 transition-all duration-300 ease-in-out ${
-        isOpen ? 'w-64' : 'w-0'
-      } overflow-hidden shadow-lg`}
+      className={`top-0 right-0 h-full transition-all duration-300 ease-in-out ${
+        isOpen ? 'w-72' : 'w-0'
+      } overflow-hidden shadow-2xl bg-gradient-to-b from-emerald-600 to-emerald-500`}
     >
-      <div className="flex items-center justify-between px-4 py-3 bg-green-600 border-b border-green-700">
-        <h2 className="text-lg font-semibold text-white">Notifications</h2>
+      <div className="flex items-center justify-between px-4 py-3 bg-emerald-700 border-b border-emerald-800 shadow-sm">
+        <h2 className="text-lg font-semibold text-white tracking-wide">Friend Requests</h2>
       </div>
 
       <div className="p-4 h-full overflow-y-auto">
         {incomingRequestUsers.length === 0 ? (
-          <p className="text-sm text-white">No incoming friend requests</p>
+          <p className="text-sm text-white/80 italic">No new friend requests</p>
         ) : (
           <ul className="space-y-3">
             {incomingRequestUsers.map((user) => (
               <li
                 key={user._id}
-                className="flex justify-between items-center p-3 bg-white rounded shadow-sm border border-gray-200"
+                className="flex flex-col justify-between items-center p-3 bg-white rounded-lg shadow-sm border  border-gray-200"
               >
-                <span className="text-sm text-gray-800">
-                  <strong>{user.username}</strong> sent you a friend request
+                <span className="text-sm font-medium text-gray-800">
+                  {user.username}
                 </span>
                 <button
                   onClick={() => acceptFriendRequest(user._id)}
-                  className="bg-green-500 text-white text-sm px-3 py-1 rounded hover:bg-green-600"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1 rounded transition"
                 >
                   Accept
                 </button>
