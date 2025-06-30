@@ -64,6 +64,7 @@ const ChatContainer = () => {
               </div>
               {messagesOnDate.map((message,index) => {
             const isReceived = message.senderId === selectedUser._id;
+            const isLast = index === messagesOnDate.length - 1;
             return (
               <div
                 key={message._id}
@@ -72,7 +73,7 @@ const ChatContainer = () => {
                     ? 'bg-white self-start text-gray-900'
                     : 'bg-yellow-300 self-end text-gray-800'
                 }`}
-                ref={messageEndRef}
+                ref={isLast ? messageEndRef : null}
               > 
                 {message.image && (
                   <img

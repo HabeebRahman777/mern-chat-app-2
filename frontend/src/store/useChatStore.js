@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "./useAuthStore";
+import toast from "react-hot-toast";
 
 export const useChatStore=create((set,get)=>({
 
@@ -13,6 +14,7 @@ export const useChatStore=create((set,get)=>({
     loading:false,
     messageLoading:false,
     isSending:false,
+    messageNotifications: {},
 
     getUsers:async()=>{
         set({loading:true})
@@ -55,9 +57,15 @@ export const useChatStore=create((set,get)=>({
         try {
             const {user} = useAuthStore.getState()
             const response = await axiosInstance.get(`chat/inrequests/${user._id}`)
+            const incoming = response.data.requests || [];
+
             set({
-                inRequests:response.data.requests
-            })
+                inRequests: incoming,
+            });
+
+            if (incoming.length > 0) {
+                useAuthStore.setState({ hasNewNotification: true });
+            }
         } catch (error) {
             console.error("Error fetching requests:", error.response?.data?.message || error.message);
         }
@@ -91,7 +99,16 @@ export const useChatStore=create((set,get)=>({
         }
     },
 
-    setSelectedUser: (selectedUser) => set({ selectedUser }),
+    setSelectedUser: (selectedUser) => {
+        const currentNotifications = get().messageNotifications;
+
+        const { [selectedUser._id]: removed, ...rest } = currentNotifications;
+
+        set({
+            selectedUser,
+            messageNotifications: rest,
+        });
+    },
 
     sendMessage:async (messageData)=>{
         set({isSending:true})
@@ -124,13 +141,34 @@ export const useChatStore=create((set,get)=>({
     const socket = useAuthStore.getState().socket;
 
     socket.on("newMessage", (newMessage) => {
-
+      const currentMessages = get().messages;
       const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
+      
+      if (isMessageSentFromSelectedUser) {
+        set({
+            messages: [...currentMessages, newMessage],
+        });
+      } else {
+        const currentNotifications = get().messageNotifications;
+        const senderId = newMessage.senderId;
 
-      set({
-        messages: [...get().messages, newMessage],
-      });
+        const updatedNotifications = {
+            ...currentNotifications,
+            [senderId]: (currentNotifications[senderId] || 0) + 1,
+        };
+
+        set({ messageNotifications: updatedNotifications });
+
+        const sender = get().users.find((u) => u._id === senderId);
+        
+        const senderName = sender?.username || "New Message";
+
+        
+        toast.success(`${senderName}: ${newMessage.text || "📎 Media message"}`, {
+            icon: "💬",
+        });
+
+      }
     });
   },
 

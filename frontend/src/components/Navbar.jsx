@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { Bell } from 'lucide-react';
+import { useChatStore } from '../store/useChatStore';
 
 const Navbar = ({ onBellClick }) => {
+  const {getInRequests,inRequests} = useChatStore()
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const hasNewNotification = useAuthStore((state) => state.hasNewNotification);
@@ -15,6 +17,7 @@ const Navbar = ({ onBellClick }) => {
   const isProfilePage = location.pathname === '/profile';
 
   useEffect(() => {
+    getInRequests()
     if (user?.username) {
       setFirstLetter(user.username.charAt(0).toUpperCase());
     }

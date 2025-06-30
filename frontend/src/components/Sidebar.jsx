@@ -17,9 +17,10 @@ const Sidebar = () => {
     sendFriendRequest,
     selectedUser,
     setSelectedUser,
+    messageNotifications,
   } = useChatStore();
 
-  const [activeTab, setActiveTab] = useState('friends'); // 'friends' or 'global'
+  const [activeTab, setActiveTab] = useState('friends'); 
 
   useEffect(() => {
     getUsers();
@@ -35,9 +36,9 @@ const Sidebar = () => {
   const nonFriendUsers = users.filter((u) => !friends.includes(u._id));
   const friendUsers = users.filter((u) => friends.includes(u._id));
 
-  // Chat view full screen (assuming chat display logic is handled outside this component)
+  
   if (selectedUser && window.innerWidth < 768) {
-    return null; // Let the chat screen take over fully in mobile
+    return null; 
   }
 
   return (
@@ -117,14 +118,22 @@ const Sidebar = () => {
                       </div>
                       <span className="text-sm font-medium text-gray-700">{user.username}</span>
                     </div>
+                    <div className='flex flex-row items-center gap-2'>
+                      <span
+                        className={`text-xs font-medium ml-6 ${
+                          onlineUsers.includes(user._id) ? 'text-green-600' : 'text-gray-400'
+                        }`}
+                      >
+                        {onlineUsers.includes(user._id) ? 'online' : 'offline'}
+                      </span>
 
-                    <span
-                      className={`text-xs font-medium ml-6 ${
-                        onlineUsers.includes(user._id) ? 'text-green-600' : 'text-gray-400'
-                      }`}
-                    >
-                      {onlineUsers.includes(user._id) ? 'online' : 'offline'}
-                    </span>
+                      {messageNotifications[user._id] && (
+                        <span className="text-xs bg-red-500 text-white rounded-full px-2 py-0.5">
+                          {messageNotifications[user._id]}
+                        </span>
+                      )}
+                    </div>
+  
                   </button>
                 ))}
               </div>
