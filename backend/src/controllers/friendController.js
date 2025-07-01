@@ -87,3 +87,36 @@ export const acceptFriendRequest = async (req, res) => {
     res.status(500).json({ message: "Error accepting friend request", error: error.message });
   }
 };
+
+export const declineFriendRequest = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const requestSenderId = req.params.id;
+
+    // Remove requestSenderId from incomingRequests of the logged-in user
+    // Remove userId from outgoingRequests of the sender
+    const user = await User.findById(userId);
+    const sender = await User.findById(requestSenderId);
+
+    if (!user || !sender) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.incomingRequests = user.incomingRequests.filter(
+      (id) => id.toString() !== requestSenderId
+    );
+
+    sender.outgoingRequests = sender.outgoingRequests.filter(
+      (id) => id.toString() !== userId.toString()
+    );
+
+    await user.save();
+    await sender.save();
+
+    res.status(200).json({ message: "Friend request declined" });
+  } catch (error) {
+    console.error("Error declining friend request:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+

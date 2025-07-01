@@ -208,7 +208,17 @@ export const useChatStore=create((set,get)=>({
     } catch (error) {
         console.error("Error marking messages as read:", error.response?.data?.message || error.message);
     }
- }
+ },
+
+ declineFriendRequest: async (userId) => {
+  try {
+    const res = await axiosInstance.put(`/friends/decline-request/${userId}`);
+    const updatedRequests = get().inRequests.filter((id) => id !== userId);
+    set({ inRequests: updatedRequests });
+  } catch (error) {
+    console.error("Error declining friend request:", error);
+  }
+},
 
 
 

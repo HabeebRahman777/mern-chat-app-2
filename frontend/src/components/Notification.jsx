@@ -10,6 +10,7 @@ const Notification = ({ isOpen }) => {
     friends,
     getFriends,
     acceptFriendRequest,
+    declineFriendRequest
   } = useChatStore();
 
   useEffect(() => {
@@ -54,19 +55,13 @@ const Notification = ({ isOpen }) => {
                   </button>
 
                   <button
-                    // onClick={() => acceptFriendRequest(user._id)}
+                    onClick={() => declineFriendRequest(user._id)}
                     className="bg-red-400 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded transition"
                   >
                     Decline
                   </button>
 
                 </div>
-                <button
-                  onClick={() => acceptFriendRequest(user._id)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1 rounded transition"
-                >
-                  Accept
-                </button>
               </li>
             ))}
           </ul>
